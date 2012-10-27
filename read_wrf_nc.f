@@ -1670,16 +1670,22 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
      !                 double precision fields
      data_dp_real = 273.0
 
+
+     ! topography removal
+  elseif ( var == 'HGT') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'HGT_U') then !
      data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'HGT_V') then !
      data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'HGT_M') then !
      data_real(box(1):box(2),box(3):box(4),1)=0.0
-
-  elseif ( var == 'HGT') then !
+  elseif ( var == 'SLPX') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'SLPY') then !
      data_real(box(1):box(2),box(3):box(4),1)=0.0
 
+     ! replace land to sea
   elseif ( var == 'LANDMASK' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
 
