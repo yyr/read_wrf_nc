@@ -462,7 +462,7 @@ program read_wrf_nc
   character (len=10)    :: ts_var(100)
   integer               :: ts_i
   character (len=2)     :: ts_type
-  Integer               :: box(4)
+  integer               :: box(4)
 
 
   ! Find out what we need to do first
@@ -475,7 +475,7 @@ program read_wrf_nc
   ! Now read the file
   call get_info_from_cdf (input_file,length_input,op_att,op_diag,op_rot,option,   &
        plot_var,plot_dim,time1,time2,           &
-       ts_type,ts_xy,ts_ll,ts_i,ts_var)
+       ts_type,ts_xy,ts_ll,ts_i,ts_var,box)
 
 
 end program read_wrf_nc
@@ -782,7 +782,7 @@ subroutine get_info_from_cdf( file,length_input,op_att,op_diag,op_rot,option,   
   real,    allocatable, dimension(:,:)             :: xlat, xlong, diff, alpha
   real,    allocatable, dimension(:,:,:)           :: u10, v10
   real,    allocatable, dimension(:,:,:)           :: uuu, vvv, pressure, height, tk, tmp
-  real                                             :: box(3)
+  integer                                          :: box(4)
 
   character (len=80)                               :: times(999), dname
   integer                                          :: istart(4), iend(4), isample(4)
@@ -1548,12 +1548,12 @@ subroutine get_info_from_cdf( file,length_input,op_att,op_diag,op_rot,option,   
            endif
 
         CASE ("-EditData")      ! Option to alter a field - controller by routine USER_CODE
-           if ( FirstTime ) then
-              print*,"CAUTION variable ",trim(varnam)," is about to change. Continue? (yes/no)"
-              read(*,*)go_change
-              if ( go_change .ne. "yes") STOP "USER controlled stop"
-              FirstTime = .FALSE.
-           endif
+           ! if ( FirstTime ) then
+           !    print*,"CAUTION variable ",trim(varnam)," is about to change. Continue? (yes/no)"
+           !    read(*,*)go_change
+           !    if ( go_change .ne. "yes") STOP "USER controlled stop"
+           !    FirstTime = .FALSE.
+           ! endif
            print*,"  "
            print*,"Changing variable: ",trim(varnam), " for time ", print_time(1:19)
            if (type_to_get .eq. 5)  then
@@ -1621,7 +1621,7 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
   real,    dimension(dim1,dim2,dim3)           ::  data_real
   integer, dimension(dim1,dim2,dim3)           ::  data_int
   character (len=10)                           :: var
-  real                                         :: box(3)
+  integer                                      :: box(4)
 
   !------------------------------READ FIRST--------------------------------------------------
   !
@@ -1639,8 +1639,24 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
   ! Add and if block for the variable you want to change - this will
   ! prevent the overwriting of a variable by mistake
 
+
+  !     land points to sea points
+  ! LANDMASK =0
+  ! XLAND    =2
+  ! LU_INDEX =16
+  ! IVGTYP   =16
+  ! ISLTYP   =14
+  ! HGT      =0
+  ! VEGFRA   =0
+  ! ALBBCK   =0.08
+  ! SHDMAX   =0
+  ! SHDMIN   =0
+  ! SNOALB   =0.08
+  ! TMN      =SST
+
   if ( var == 'TSK') then                 ! will turn all TSK values to 100.00
-     data_real = 100.00
+     data_real(box(1):box(2),box(3):box(4),1)=100.00
+
   elseif ( var == 'SOILHGT') then         ! raise soil height by 30%
      where (data_real .gt. 0.0)
         data_real = data_real + .3*data_real
@@ -1653,6 +1669,64 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
   elseif ( var == 'TH2') then             ! change TH2 to 273.00  - this is for 3dvar
      !                 double precision fields
      data_dp_real = 273.0
+
+  elseif ( var == 'HGT_U') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'HGT_V') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'HGT_M') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+  elseif ( var == 'HGT') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+  elseif ( var == 'LANDMASK' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+  elseif ( var == 'XLAND' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=2.0
+
+  elseif ( var == 'LU_INDEX' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=16.0
+
+  elseif ( var == 'IVGTYP' ) then
+     data_int(box(1):box(2),box(3):box(4),1)=16
+
+  elseif ( var == 'ISLTYP' ) then
+     data_int(box(1):box(2),box(3):box(4),1)=14
+
+  elseif ( var == 'VEGFRA' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+  elseif ( var == 'ALBBCK' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.08
+
+  elseif ( var == 'SHDMAX' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+  elseif ( var == 'SHDMIN' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+  elseif ( var == 'SNOALB' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.08
+
+  elseif ( var == 'SNOWC' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0
+
+  elseif ( var == 'SNOW' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.
+
+  elseif ( var == 'SST' ) then
+     open(99,file='sst.dat',status='unknown',FORM='unformatted')
+     write(99) data_real(box(1):box(2),box(3):box(4),1)
+     close(99)
+
+  ! elseif ( var == 'TMN' ) then
+  !    ! allocate (sst(box(1):box(2),box(3):box(4),1))
+  !    ! open(100,file='sst.dat',status='old',FORM='unformatted')
+  !    ! read(100) sst(box(1):box(2),box(3):box(4),1)
+  !    data_real(box(1):box(2),box(3):box(4),1)=sst(box(1):box(2),box(3):box(4),1)
+
   else
      print*,"Variable given was not one of above - so no change will be"
      print*,"  made to any variables"
