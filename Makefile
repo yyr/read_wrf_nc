@@ -3,7 +3,7 @@ FORTRAN=ifort
 RM = /bin/rm -f
 NETCDFDIR=/usr/local/netcdf
 
-FFLAGS = -free
+FFLAGS = -free -O2 -g -traceback
 LFLAGS = "-L${NETCDFDIR}/lib"
 INCLUDES= "-I${NETCDFDIR}/include"
 LIBS = -lnetcdf -lm
