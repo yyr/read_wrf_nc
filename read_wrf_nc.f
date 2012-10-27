@@ -462,11 +462,12 @@ program read_wrf_nc
   character (len=10)    :: ts_var(100)
   integer               :: ts_i
   character (len=2)     :: ts_type
+  Integer               :: box(4)
 
 
   ! Find out what we need to do first
   call read_args(input_file,length_input,op_att,op_diag,op_rot,option,plot_var,plot_dim, &
-       time1,time2,ts_type,ts_xy,ts_ll,ts_i,ts_var)
+       time1,time2,ts_type,ts_xy,ts_ll,ts_i,ts_var,box)
   print*,"INPUT FILE IS: ",trim(input_file)
   print*," "
 
@@ -536,7 +537,7 @@ end subroutine help_info
 !------------------------------------------------------------------------------
 
 subroutine read_args(input_file,length_input,op_att,op_diag,op_rot,option,plot_var,plot_dim, &
-     time1,time2,ts_type,ts_xy,ts_ll,ts_i,ts_var)
+     time1,time2,ts_type,ts_xy,ts_ll,ts_i,ts_var,box)
 
   implicit none
   character (len=80)    :: input_file
@@ -550,6 +551,7 @@ subroutine read_args(input_file,length_input,op_att,op_diag,op_rot,option,plot_v
   integer, external     :: iargc
   character (len=80)    :: dummy
 
+  integer               :: box(4)
   integer               :: ts_xy(3)
   real                  :: ts_ll(3)
   character (len=10)    :: ts_var(100)
@@ -695,6 +697,23 @@ subroutine read_args(input_file,length_input,op_att,op_diag,op_rot,option,plot_v
            op_rot = .TRUE.
         CASE ("-diag")
            op_diag = .TRUE.
+
+        CASE ("-box")
+           do
+              i = i+1
+              call getarg(i,dummy)
+              if ( dummy(1:1) == " " ) exit
+              if ( dummy(1:1)=="-" .or. dummy(1:3)=="geo" .or. &
+                   dummy(1:3)=="met" .or. dummy(1:3)=="wrf") then ! found another option
+                 i = i-1
+                 exit
+              else                          ! read variables
+                 ts_i = ts_i + 1            ! ts_i is just loop iterator
+                 read(dummy,'(i3)')idummy
+                 box(ts_i) = idummy
+              endif
+           enddo
+
         CASE ("-EditData")
            option = dummy
            i = i+1
@@ -723,7 +742,7 @@ end subroutine read_args
 !------------------------------------------------------------------------------
 subroutine get_info_from_cdf( file,length_input,op_att,op_diag,op_rot,option,   &
      plot_var,plot_dim,time1,time2,     &
-     ts_type,ts_xy,ts_ll,ts_i,ts_var)
+     ts_type,ts_xy,ts_ll,ts_i,ts_var,box)
 
   use map_utils
 
@@ -763,6 +782,7 @@ subroutine get_info_from_cdf( file,length_input,op_att,op_diag,op_rot,option,   
   real,    allocatable, dimension(:,:)             :: xlat, xlong, diff, alpha
   real,    allocatable, dimension(:,:,:)           :: u10, v10
   real,    allocatable, dimension(:,:,:)           :: uuu, vvv, pressure, height, tk, tmp
+  real                                             :: box(3)
 
   character (len=80)                               :: times(999), dname
   integer                                          :: istart(4), iend(4), isample(4)
@@ -1537,13 +1557,13 @@ subroutine get_info_from_cdf( file,length_input,op_att,op_diag,op_rot,option,   
            print*,"  "
            print*,"Changing variable: ",trim(varnam), " for time ", print_time(1:19)
            if (type_to_get .eq. 5)  then
-              CALL USER_CODE(data_r,data_dp_r,data_i,iend(1),iend(2),iend(3),varnam)
+              CALL USER_CODE(data_r,data_dp_r,data_i,iend(1),iend(2),iend(3),varnam,box)
               call ncvpt( cdfid,id_var,istart,iend,data_r,rcode)
            elseif (type_to_get .eq. 6)  then
-              CALL USER_CODE(data_r,data_dp_r,data_i,iend(1),iend(2),iend(3),varnam)
+              CALL USER_CODE(data_r,data_dp_r,data_i,iend(1),iend(2),iend(3),varnam,box)
               call ncvpt( cdfid,id_var,istart,iend,data_dp_r,rcode)
            elseif (type_to_get .eq. 4) then
-              CALL USER_CODE(data_r,data_dp_r,data_i,iend(1),iend(2),iend(3),varnam)
+              CALL USER_CODE(data_r,data_dp_r,data_i,iend(1),iend(2),iend(3),varnam,box)
               call ncvpt( cdfid,id_var,istart,iend,data_i,rcode)
            endif
 
@@ -1593,7 +1613,7 @@ end subroutine get_info_from_cdf
 !-------------------------------------------------------------------------------------------
 !-------------------------------------------------------------------------------------------
 
-subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var)
+subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
 
   implicit none
   integer                                      ::  dim1,dim2,dim3
@@ -1601,7 +1621,7 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var)
   real,    dimension(dim1,dim2,dim3)           ::  data_real
   integer, dimension(dim1,dim2,dim3)           ::  data_int
   character (len=10)                           :: var
-
+  real                                         :: box(3)
 
   !------------------------------READ FIRST--------------------------------------------------
   !
