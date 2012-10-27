@@ -1684,41 +1684,74 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
      data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'SLPY') then !
      data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OA1') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OA2') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OA3') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OA4') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OL1') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OL2') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OL3') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'OL4') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'VAR') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'CON') then !
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+
+
 
      ! replace land to sea
+     ! geo_em variables
   elseif ( var == 'LANDMASK' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'GREENFRAC' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.
+  elseif ( var == 'ALBEDO12M' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=8.
+  elseif ( var == 'LANDUSEF' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.08
+  elseif ( var == 'SOILCTOP' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'SOILCBOT' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'SOILTEMP' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'SLOPECAT' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.0
+  elseif ( var == 'SNOALB' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=0.08
+  elseif ( var == 'LU_INDEX' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=16.0
+  elseif ( var == 'SCT_DOM' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=14.0
+  elseif ( var == 'SCB_DOM' ) then
+     data_real(box(1):box(2),box(3):box(4),1)=14.0
+
+
 
   elseif ( var == 'XLAND' ) then
      data_real(box(1):box(2),box(3):box(4),1)=2.0
-
-  elseif ( var == 'LU_INDEX' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=16.0
-
   elseif ( var == 'IVGTYP' ) then
      data_int(box(1):box(2),box(3):box(4),1)=16
-
   elseif ( var == 'ISLTYP' ) then
      data_int(box(1):box(2),box(3):box(4),1)=14
-
   elseif ( var == 'VEGFRA' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
-
   elseif ( var == 'ALBBCK' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.08
-
   elseif ( var == 'SHDMAX' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
-
   elseif ( var == 'SHDMIN' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
-
-  elseif ( var == 'SNOALB' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=0.08
-
   elseif ( var == 'SNOWC' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0
-
   elseif ( var == 'SNOW' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.
 

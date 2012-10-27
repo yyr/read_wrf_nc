@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) Yagnesh Raghava Yakkala. http://yagnesh.org
-#    File: remove_topo.sh
+#    File: wrf_nc_box_manipulate.sh
 # Created: 土曜日, 10月 27 2012
 # License: GPL v3 or later.  <http://www.gnu.org/licenses/gpl.html>
 #
@@ -23,7 +23,24 @@ fi
 #
 function rem_topo()
 {
-    declare -a variables=("HGT_U" "HGT_V" "HGT_M" "SLPY" "SLPX")
+    declare -a variables=("HGT_U" "HGT_V" "HGT_M" "SLPY" "SLPX"
+        "OA1" "OA2" "OA3" "OA4" "OL1" "OL2" "OL3" "OL4" "VAR" "CON")
+    i=0
+    while [[ i -lt $no_of_doms ]]; do
+        for var in ${variables[@]}; do
+            echo ${read_wrf_nc} -box ${box[i]} -EditData $var ${geofiles[i]}
+            ${read_wrf_nc} -box ${box[i]} -EditData $var ${geofiles[i]}
+        done
+        let i=i+1
+    done
+}
+
+function land2sea()
+{
+    rem_topo
+    declare -a variables=("LANDMASK" "ALBEDO12M" "GREENFRAC"
+        "LU_INDEX" "IVGTYP" "ISLTYP" "SOILCBOT" "SCT_DOM" "SCB_DOM" "SLOPECAT"
+        "VEGFRA" "ALBBCK" "SHDMAX" "SHDMIN" "SNOALB" "SNOWC" "SNOW")
     i=0
     while [[ i -lt $no_of_doms ]]; do
         for var in ${variables[@]}; do
@@ -50,6 +67,6 @@ while [[ i -lt $no_of_doms ]]; do
     let i=i+1
 done
 
-rem_topo
+land2sea
 
-# remove_topo.sh ends here
+# wrf_nc_box_manipulate.sh ends here
