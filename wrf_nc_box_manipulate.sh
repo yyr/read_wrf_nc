@@ -21,6 +21,13 @@ else
 fi
 
 #
+function run_rwn()
+{
+    echo ${read_wrf_nc} $@
+    ${read_wrf_nc} $@ >> $log_file
+}
+
+
 function rem_topo()
 {
     declare -a variables=("HGT_U" "HGT_V" "HGT_M" "SLPY" "SLPX"
@@ -28,8 +35,7 @@ function rem_topo()
     i=0
     while [[ i -lt $no_of_doms ]]; do
         for var in ${variables[@]}; do
-            echo ${read_wrf_nc} -box ${box[i]} -EditData $var ${geofiles[i]}
-            ${read_wrf_nc} -box ${box[i]} -EditData $var ${geofiles[i]}
+            run_rwn -box ${box[i]} -EditData $var ${geofiles[i]}
         done
         let i=i+1
     done
@@ -38,14 +44,14 @@ function rem_topo()
 function land2sea()
 {
     rem_topo
-    declare -a variables=("LANDMASK" "ALBEDO12M" "GREENFRAC"
-        "LU_INDEX" "IVGTYP" "ISLTYP" "SOILCBOT" "SCT_DOM" "SCB_DOM" "SLOPECAT"
-        "VEGFRA" "ALBBCK" "SHDMAX" "SHDMIN" "SNOALB" "SNOWC" "SNOW")
+    declare -a variables=("LANDMASK"  "GREENFRAC" "ALBEDO12M" "LANDUSEF"
+        "SOILCTOP" "SOILCBOT" "SOILTEMP" "SLOPECAT" "SNOALB" "LU_INDEX"
+        "SCT_DOM" "SCB_DOM"
+        "IVGTYP" "ISLTYP" "VEGFRA" "ALBBCK" "SHDMAX" "SHDMIN"  "SNOWC" "SNOW")
     i=0
     while [[ i -lt $no_of_doms ]]; do
         for var in ${variables[@]}; do
-            echo ${read_wrf_nc} -box ${box[i]} -EditData $var ${geofiles[i]}
-            ${read_wrf_nc} -box ${box[i]} -EditData $var ${geofiles[i]}
+            run_rwn -box ${box[i]} -EditData $var ${geofiles[i]}
         done
         let i=i+1
     done
@@ -53,6 +59,9 @@ function land2sea()
 
 
 # code
+log_file=log.rwn
+echo "run: $(date)" > $log_file
+
 i=0
 while [[ i -lt $no_of_doms ]]; do
     let dummy=i+1
