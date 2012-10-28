@@ -1712,15 +1712,18 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
   elseif ( var == 'LANDMASK' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'GREENFRAC' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=0.
+     data_real(box(1):box(2),box(3):box(4),:)=0.
   elseif ( var == 'ALBEDO12M' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=8.
+     data_real(box(1):box(2),box(3):box(4),:)=8.
   elseif ( var == 'LANDUSEF' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=0.08
+     data_real(box(1):box(2),box(3):box(4),1.:15)=0.
+     data_real(box(1):box(2),box(3):box(4),16)=1.
   elseif ( var == 'SOILCTOP' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=0.0
+     data_real(box(1):box(2),box(3):box(4),:)=0.0
+     data_real(box(1):box(2),box(3):box(4),14)=1.
   elseif ( var == 'SOILCBOT' ) then
-     data_real(box(1):box(2),box(3):box(4),1)=0.0
+     data_real(box(1):box(2),box(3):box(4),:)=0.0
+     data_real(box(1):box(2),box(3):box(4),14)=1.
   elseif ( var == 'SOILTEMP' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'SLOPECAT' ) then
