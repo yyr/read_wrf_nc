@@ -1654,24 +1654,15 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
   ! SNOALB   =0.08
   ! TMN      =SST
 
-  if ( var == 'TSK') then                 ! will turn all TSK values to 100.00
+  if ( var == 'SOMETHING') then                 ! DUMMY IF
      data_real(box(1):box(2),box(3):box(4),1)=100.00
 
+     ! topography removal over a given box
   elseif ( var == 'SOILHGT') then         ! raise soil height by 30%
-     where (data_real .gt. 0.0)
-        data_real = data_real + .3*data_real
-     endwhere
-  elseif ( var == 'ISLTYP') then          ! change all 1's in this field with 2's
-     !where (data_int == 1 )
-     !  data_int = 2
-     !endwhere
-     data_int = 2                        ! change all into 2's
-  elseif ( var == 'TH2') then             ! change TH2 to 273.00  - this is for 3dvar
-     !                 double precision fields
-     data_dp_real = 273.0
-
-
-     ! topography removal
+     ! where (data_real .gt. 0.0)
+     !    data_real = data_real + .3*data_real
+     ! endwhere
+     data_real(box(1):box(2),box(3):box(4),1)=0.
   elseif ( var == 'HGT') then !
      data_real(box(1):box(2),box(3):box(4),1)=0.0
   elseif ( var == 'HGT_U') then !
@@ -1738,7 +1729,16 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
      data_real(box(1):box(2),box(3):box(4),1)=14.0
 
 
-
+  elseif ( var == 'ISLTYP') then          ! change all 1's in this field with 2's
+     !where (data_int == 1 )
+     !  data_int = 2
+     !endwhere
+     data_int = 2                        ! change all into 2's
+  elseif ( var == 'TH2') then             ! change TH2 to 273.00  - this is for 3dvar
+     ! double precision fields
+     data_dp_real = 273.0
+  elseif ( var == 'TSK') then                 ! will turn all TSK values to 100.00
+     data_real(box(1):box(2),box(3):box(4),1)=100.00
   elseif ( var == 'XLAND' ) then
      data_real(box(1):box(2),box(3):box(4),1)=2.0
   elseif ( var == 'IVGTYP' ) then
