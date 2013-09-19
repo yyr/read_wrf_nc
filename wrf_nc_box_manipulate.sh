@@ -30,12 +30,12 @@ function run_rwn()
 
 function rem_topo()
 {
-    declare -a variables=("HGT_U" "HGT_V" "HGT_M" "SLPY" "SLPX"
+    declare -a variables=("HGT" "HGT_U" "HGT_V" "HGT_M" "SLPY" "SLPX"
         "OA1" "OA2" "OA3" "OA4" "OL1" "OL2" "OL3" "OL4" "VAR" "CON")
     i=0
     while [[ i -lt $no_of_doms ]]; do
         for var in ${variables[@]}; do
-            run_rwn -box ${box[i]} -EditData $var ${geofiles[i]}
+            run_rwn -box ${box[i]} -EditData $var ${wrfinputfiles[i]}
         done
         let i=i+1
     done
@@ -51,7 +51,7 @@ function land2sea()
     i=0
     while [[ i -lt $no_of_doms ]]; do
         for var in ${variables[@]}; do
-            run_rwn -box ${box[i]} -EditData $var ${geofiles[i]}
+            run_rwn -box ${box[i]} -EditData $var ${wrfinputfiles[i]}
         done
         let i=i+1
     done
@@ -76,6 +76,7 @@ while [[ i -lt $no_of_doms ]]; do
     let i=i+1
 done
 
+# rem_topo
 land2sea
 
 # wrf_nc_box_manipulate.sh ends here
