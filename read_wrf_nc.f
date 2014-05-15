@@ -1758,6 +1758,10 @@ subroutine USER_CODE (data_real,data_dp_real,data_int,dim1,dim2,dim3,var,box)
   elseif ( var == 'SNOW' ) then
      data_real(box(1):box(2),box(3):box(4),1)=0.
 
+     ! remove seaice completely.
+  elseif ( var == 'SEAICE' ) then
+     data_real(:,:,1)=0.
+
   elseif ( var == 'SST' ) then
      open(99,file='sst.dat',status='unknown',FORM='unformatted')
      write(99) data_real(box(1):box(2),box(3):box(4),1)
